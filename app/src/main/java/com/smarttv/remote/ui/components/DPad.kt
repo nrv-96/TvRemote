@@ -192,6 +192,7 @@ private fun DrawScope.drawDownArrow(
     val tipX = center.x + midRadius * cos(arrowAngle)
     val tipY = center.y + midRadius * sin(arrowAngle)
 
+    val tip = Offset(tipX, tipY)
     val arrowOffset = arrowLength * 0.3f
     val left = Offset(tipX - arrowOffset, tipY - arrowOffset)
     val right = Offset(tipX + arrowOffset, tipY - arrowOffset)
@@ -235,6 +236,7 @@ private fun DrawScope.drawLeftArrow(
     val tipX = center.x + midRadius * cos(arrowAngle)
     val tipY = center.y + midRadius * sin(arrowAngle)
 
+    val tip = Offset(tipX, tipY)
     val arrowOffset = arrowLength * 0.3f
     val top = Offset(tipX + arrowOffset, tipY - arrowOffset)
     val bottom = Offset(tipX + arrowOffset, tipY + arrowOffset)
@@ -278,6 +280,7 @@ private fun DrawScope.drawRightArrow(
     val tipX = center.x + midRadius * cos(arrowAngle)
     val tipY = center.y + midRadius * sin(arrowAngle)
 
+    val tip = Offset(tipX, tipY)
     val arrowOffset = arrowLength * 0.3f
     val top = Offset(tipX - arrowOffset, tipY - arrowOffset)
     val bottom = Offset(tipX - arrowOffset, tipY + arrowOffset)

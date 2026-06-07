@@ -337,29 +337,54 @@ class RemoteViewModel(application: Application) : AndroidViewModel(application) 
 
     private fun handleServerMessage(msg: com.smarttv.remote.proto.RemoteMessage) {
         try {
-            when (msg.messageTypeCase) {
-                com.smarttv.remote.proto.RemoteMessage.MessageTypeCase.REMOTE_SET_VOLUME_LEVEL -> {
+            when {
+                msg.hasRemoteSetVolumeLevel() -> {
                     val level = msg.remoteSetVolumeLevel.level
                     _state.update { it.copy(volumeLevel = level) }
                     FileLogger.d(TAG, "TV reported volume: $level")
                 }
-                com.smarttv.remote.proto.RemoteMessage.MessageTypeCase.REMOTE_START -> {
+                msg.hasRemoteStart() -> {
                     val name = msg.remoteStart.name
                     FileLogger.i(TAG, "TV session started: $name")
                 }
-                com.smarttv.remote.proto.RemoteMessage.MessageTypeCase.REMOTE_ERROR -> {
+                msg.hasRemoteError() -> {
                     val errorMsg = msg.remoteError.errorMessage
                     val errorCode = msg.remoteError.errorCode
                     FileLogger.e(TAG, "TV error: code=$errorCode, message=$errorMsg")
                     _state.update { it.copy(errorMessage = "TV error: $errorMsg") }
                 }
                 else -> {
-                    FileLogger.d(TAG, "Unhandled message type: ${msg.messageTypeCase}")
+                    FileLogger.d(TAG, "Unhandled message type: ${describeMessage(msg)}")
                 }
             }
         } catch (e: Exception) {
             FileLogger.e(TAG, "Error handling server message", e)
         }
+    }
+
+    private fun describeMessage(msg: com.smarttv.remote.proto.RemoteMessage): String = when {
+        msg.hasRemoteConfigure() -> "RemoteConfigure"
+        msg.hasRemoteSetActive() -> "RemoteSetActive"
+        msg.hasRemoteError() -> "RemoteError"
+        msg.hasRemotePingRequest() -> "RemotePingRequest"
+        msg.hasRemotePingResponse() -> "RemotePingResponse"
+        msg.hasRemoteKeyInject() -> "RemoteKeyInject"
+        msg.hasRemoteImeKeyInject() -> "RemoteImeKeyInject"
+        msg.hasRemoteImeBatchEdit() -> "RemoteImeBatchEdit"
+        msg.hasRemoteImeShowRequest() -> "RemoteImeShowRequest"
+        msg.hasRemoteVoiceBegin() -> "RemoteVoiceBegin"
+        msg.hasRemoteVoicePayload() -> "RemoteVoicePayload"
+        msg.hasRemoteVoiceEnd() -> "RemoteVoiceEnd"
+        msg.hasRemoteStart() -> "RemoteStart"
+        msg.hasRemoteSetVolumeLevel() -> "RemoteSetVolumeLevel"
+        msg.hasRemoteAdjustVolumeLevel() -> "RemoteAdjustVolumeLevel"
+        msg.hasRemoteSetPreferredAudioDevice() -> "RemoteSetPreferredAudioDevice"
+        msg.hasRemoteResetPreferredAudioDevice() -> "RemoteResetPreferredAudioDevice"
+        msg.hasRemoteAppLinkLaunchRequest() -> "RemoteAppLinkLaunchRequest"
+        msg.hasRemotePairingKeyInject() -> "RemotePairingKeyInject"
+        msg.hasRemoteRelativePointer() -> "RemoteRelativePointer"
+        msg.hasRemotePointerSetPosition() -> "RemotePointerSetPosition"
+        else -> "Unknown"
     }
 
     override fun onCleared() {

@@ -256,7 +256,7 @@ class RemoteProtocol(
             val data = ByteArray(length)
             inputStream!!.readFully(data)
             val message = RemoteMessage.parseFrom(data)
-            FileLogger.d(TAG, "Received message type: ${message.messageTypeCase}")
+            FileLogger.d(TAG, "Received message type: ${describeMessage(message)}")
             Result.success(message)
         } catch (e: java.net.SocketTimeoutException) {
             Result.success(null)
@@ -288,6 +288,31 @@ class RemoteProtocol(
         if (!isActive()) {
             throw IllegalStateException("Not connected to TV")
         }
+    }
+
+    private fun describeMessage(msg: RemoteMessage): String = when {
+        msg.hasRemoteConfigure() -> "RemoteConfigure"
+        msg.hasRemoteSetActive() -> "RemoteSetActive"
+        msg.hasRemoteError() -> "RemoteError"
+        msg.hasRemotePingRequest() -> "RemotePingRequest"
+        msg.hasRemotePingResponse() -> "RemotePingResponse"
+        msg.hasRemoteKeyInject() -> "RemoteKeyInject"
+        msg.hasRemoteImeKeyInject() -> "RemoteImeKeyInject"
+        msg.hasRemoteImeBatchEdit() -> "RemoteImeBatchEdit"
+        msg.hasRemoteImeShowRequest() -> "RemoteImeShowRequest"
+        msg.hasRemoteVoiceBegin() -> "RemoteVoiceBegin"
+        msg.hasRemoteVoicePayload() -> "RemoteVoicePayload"
+        msg.hasRemoteVoiceEnd() -> "RemoteVoiceEnd"
+        msg.hasRemoteStart() -> "RemoteStart"
+        msg.hasRemoteSetVolumeLevel() -> "RemoteSetVolumeLevel"
+        msg.hasRemoteAdjustVolumeLevel() -> "RemoteAdjustVolumeLevel"
+        msg.hasRemoteSetPreferredAudioDevice() -> "RemoteSetPreferredAudioDevice"
+        msg.hasRemoteResetPreferredAudioDevice() -> "RemoteResetPreferredAudioDevice"
+        msg.hasRemoteAppLinkLaunchRequest() -> "RemoteAppLinkLaunchRequest"
+        msg.hasRemotePairingKeyInject() -> "RemotePairingKeyInject"
+        msg.hasRemoteRelativePointer() -> "RemoteRelativePointer"
+        msg.hasRemotePointerSetPosition() -> "RemotePointerSetPosition"
+        else -> "Unknown"
     }
 
     private fun sendMessage(message: RemoteMessage) {

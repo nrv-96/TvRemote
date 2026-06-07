@@ -15,7 +15,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Devices
 import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material.icons.filled.SmartTv
+import androidx.compose.material.icons.filled.Tv
 import androidx.compose.material.icons.filled.Wifi
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -130,7 +130,7 @@ fun DiscoveryScreen(
                 verticalArrangement = Arrangement.Center
             ) {
                 Icon(
-                    Icons.Filled.SmartTv,
+                    Icons.Filled.Tv,
                     contentDescription = null,
                     modifier = Modifier.size(80.dp),
                     tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.3f)
