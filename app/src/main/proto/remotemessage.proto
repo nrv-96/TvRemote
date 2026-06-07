@@ -1,0 +1,235 @@
+syntax = "proto3";
+
+package com.smarttv.remote.proto;
+
+option java_package = "com.smarttv.remote.proto";
+option java_multiple_files = true;
+
+// ─── Key Codes (subset of Android KeyEvent key codes) ───
+
+enum RemoteKeyCode {
+    KEYCODE_HOME = 3;
+    KEYCODE_BACK = 4;
+    KEYCODE_CALL = 5;
+    KEYCODE_ENDCALL = 6;
+    KEYCODE_DPAD_UP = 19;
+    KEYCODE_DPAD_DOWN = 20;
+    KEYCODE_DPAD_LEFT = 21;
+    KEYCODE_DPAD_RIGHT = 22;
+    KEYCODE_DPAD_CENTER = 23;
+    KEYCODE_VOLUME_UP = 24;
+    KEYCODE_VOLUME_DOWN = 25;
+    KEYCODE_POWER = 26;
+    KEYCODE_MENU = 82;
+    KEYCODE_MUTE = 91;
+    KEYCODE_ENTER = 66;
+    KEYCODE_DEL = 67;
+    KEYCODE_SETTINGS = 176;
+    KEYCODE_SEARCH = 84;
+    KEYCODE_MEDIA_PLAY_PAUSE = 85;
+    KEYCODE_MEDIA_STOP = 86;
+    KEYCODE_MEDIA_NEXT = 87;
+    KEYCODE_MEDIA_PREVIOUS = 88;
+    KEYCODE_MEDIA_REWIND = 89;
+    KEYCODE_MEDIA_FAST_FORWARD = 90;
+    KEYCODE_MEDIA_PLAY = 126;
+    KEYCODE_MEDIA_PAUSE = 127;
+    KEYCODE_CHANNEL_UP = 166;
+    KEYCODE_CHANNEL_DOWN = 167;
+    KEYCODE_INFO = 165;
+    KEYCODE_GUIDE = 168;
+    KEYCODE_CAPTIONS = 175;
+    KEYCODE_BRIGHTNESS_DOWN = 220;
+    KEYCODE_BRIGHTNESS_UP = 221;
+    KEYCODE_SLEEP = 223;
+    KEYCODE_WAKEUP = 224;
+    KEYCODE_INPUT = 178;
+    KEYCODE_PROGRAM_RED = 184;
+    KEYCODE_PROGRAM_GREEN = 185;
+    KEYCODE_PROGRAM_YELLOW = 186;
+    KEYCODE_PROGRAM_BLUE = 187;
+    KEYCODE_APP_SWITCH = 187;
+    KEYCODE_ASSIST = 219;
+    KEYCODE_0 = 7;
+    KEYCODE_1 = 8;
+    KEYCODE_2 = 9;
+    KEYCODE_3 = 10;
+    KEYCODE_4 = 11;
+    KEYCODE_5 = 12;
+    KEYCODE_6 = 13;
+    KEYCODE_7 = 14;
+    KEYCODE_8 = 15;
+    KEYCODE_9 = 16;
+}
+
+// ─── Key Actions ───
+
+enum RemoteKeyAction {
+    KEY_ACTION_SHORT = 1;
+    KEY_ACTION_START_LONG = 2;
+    KEY_ACTION_END_LONG = 3;
+}
+
+// ─── Pairing ───
+
+message RemotePairingKeyInject {
+    string pairing_code = 1;
+}
+
+// ─── Key Injection ───
+
+message RemoteKeyInject {
+    RemoteKeyCode key_code = 1;
+    RemoteKeyAction key_action = 2;
+}
+
+// ─── IME (Keyboard) ───
+
+message RemoteImeKeyInject {
+    string text = 1;
+}
+
+message RemoteImeBatchEdit {
+    string text = 1;
+    int32 start = 2;
+    int32 end = 3;
+}
+
+message RemoteImeShowRequest {
+    bool show = 1;
+}
+
+// ─── Configuration ───
+
+message RemoteConfigure {
+    string device_name = 1;
+    int32 protocol_version = 2;
+    bool unknown3 = 3;
+    string device_id = 4;
+}
+
+// ─── Session ───
+
+enum RemoteRoleType {
+    ROLE_APP = 0;
+    ROLE_INPUT = 1;
+}
+
+message RemoteSetActive {
+    bool active = 1;
+    RemoteRoleType role = 2;
+}
+
+// ─── Error ───
+
+message RemoteError {
+    int32 error_code = 1;
+    string error_message = 2;
+}
+
+// ─── Start ───
+
+message RemoteStart {
+    string name = 1;
+    int32 protocol_version = 2;
+    int32 unknown3 = 3;
+    int32 unknown4 = 4;
+}
+
+// ─── Volume ───
+
+message RemoteSetVolumeLevel {
+    int32 level = 1;
+}
+
+message RemoteAdjustVolumeLevel {
+    int32 delta = 1;
+}
+
+// ─── Ping ───
+
+message RemotePingRequest {
+    int64 unknown1 = 1;
+}
+
+message RemotePingResponse {
+    int64 unknown1 = 1;
+}
+
+// ─── Voice ───
+
+message RemoteVoiceBegin {
+    int32 unknown1 = 1;
+    int32 unknown2 = 2;
+    int32 unknown3 = 3;
+    int32 unknown4 = 4;
+}
+
+message RemoteVoicePayload {
+    bytes payload = 1;
+    int32 unknown2 = 2;
+    bool unknown3 = 3;
+}
+
+message RemoteVoiceEnd {
+    int32 unknown1 = 1;
+}
+
+// ─── App Launch ───
+
+message RemoteAppLinkLaunchRequest {
+    string uri = 1;
+    string package_name = 2;
+}
+
+// ─── Audio Device ───
+
+message RemoteSetPreferredAudioDevice {
+    int32 device_type = 1;
+}
+
+message RemoteResetPreferredAudioDevice {}
+
+// ─── Pointer (Touchpad) ───
+
+message RemoteRelativePointer {
+    int32 dx = 1;
+    int32 dy = 2;
+}
+
+message RemotePointerSetPosition {
+    int32 x = 1;
+    int32 y = 2;
+}
+
+// ─── Pairing Option ───
+
+message RemotePairingOption {
+    string option_type = 1;
+}
+
+// ─── Top-Level Message ───
+
+message RemoteMessage {
+    RemoteConfigure remote_configure = 1;
+    RemoteSetActive remote_set_active = 2;
+    RemoteError remote_error = 3;
+    RemotePingRequest remote_ping_request = 8;
+    RemotePingResponse remote_ping_response = 9;
+    RemoteKeyInject remote_key_inject = 10;
+    RemoteImeKeyInject remote_ime_key_inject = 20;
+    RemoteImeBatchEdit remote_ime_batch_edit = 21;
+    RemoteImeShowRequest remote_ime_show_request = 22;
+    RemoteVoiceBegin remote_voice_begin = 30;
+    RemoteVoicePayload remote_voice_payload = 31;
+    RemoteVoiceEnd remote_voice_end = 32;
+    RemoteStart remote_start = 40;
+    RemoteSetVolumeLevel remote_set_volume_level = 50;
+    RemoteAdjustVolumeLevel remote_adjust_volume_level = 51;
+    RemoteSetPreferredAudioDevice remote_set_preferred_audio_device = 60;
+    RemoteResetPreferredAudioDevice remote_reset_preferred_audio_device = 61;
+    RemoteAppLinkLaunchRequest remote_app_link_launch_request = 90;
+    RemotePairingKeyInject remote_pairing_key_inject = 70;
+    RemoteRelativePointer remote_relative_pointer = 100;
+    RemotePointerSetPosition remote_pointer_set_position = 101;
+}
