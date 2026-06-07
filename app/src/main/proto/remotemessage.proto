@@ -8,6 +8,8 @@ option java_multiple_files = true;
 // ─── Key Codes (subset of Android KeyEvent key codes) ───
 
 enum RemoteKeyCode {
+    option allow_alias = true;
+    KEYCODE_UNKNOWN = 0;
     KEYCODE_HOME = 3;
     KEYCODE_BACK = 4;
     KEYCODE_CALL = 5;
@@ -65,6 +67,7 @@ enum RemoteKeyCode {
 // ─── Key Actions ───
 
 enum RemoteKeyAction {
+    KEY_ACTION_UNKNOWN = 0;
     KEY_ACTION_SHORT = 1;
     KEY_ACTION_START_LONG = 2;
     KEY_ACTION_END_LONG = 3;
