@@ -2,6 +2,7 @@
 *.class
 .gradle
 app/build/
+
 # Log file
 *.log
 
@@ -13,7 +14,6 @@ app/build/
 
 # Package Files #
 *.jar
-!gradle/wrapper/gradle-wrapper.jar
 *.war
 *.nar
 *.ear

@@ -36,6 +36,7 @@ class RemoteViewModel(application: Application) : AndroidViewModel(application) 
     private val preferencesManager = PreferencesManager(application)
     private var messageReaderJob: Job? = null
     private var reconnectJob: Job? = null
+    private var discoveryTimeoutJob: Job? = null
 
     init {
         FileLogger.d(TAG, "ViewModel initialized")
@@ -60,8 +61,21 @@ class RemoteViewModel(application: Application) : AndroidViewModel(application) 
     fun startDiscovery() {
         try {
             FileLogger.i(TAG, "Starting TV discovery")
-            _state.update { it.copy(connectionState = ConnectionState.Discovering) }
+            _state.update { it.copy(connectionState = ConnectionState.Discovering, discoveryErrorMessage = null) }
             discoveryService.startDiscovery()
+            discoveryTimeoutJob?.cancel()
+            discoveryTimeoutJob = viewModelScope.launch {
+                delay(15_000)
+                if (_state.value.connectionState == ConnectionState.Discovering) {
+                    discoveryService.stopDiscovery()
+                    _state.update { it.copy(
+                        connectionState = ConnectionState.Disconnected,
+                        discoveryErrorMessage = if (_state.value.discoveredDevices.isEmpty())
+                            "No TVs found. Make sure your TV is on and connected to the same network."
+                        else null
+                    )}
+                }
+            }
         } catch (e: Exception) {
             FileLogger.e(TAG, "Failed to start discovery", e)
             _state.update { it.copy(
@@ -73,6 +87,7 @@ class RemoteViewModel(application: Application) : AndroidViewModel(application) 
 
     fun stopDiscovery() {
         try {
+            discoveryTimeoutJob?.cancel()
             discoveryService.stopDiscovery()
             _state.update { it.copy(connectionState = ConnectionState.Disconnected) }
         } catch (e: Exception) {

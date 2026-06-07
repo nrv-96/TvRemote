@@ -1,7 +1,6 @@
 package com.smarttv.remote.util
 
 import android.content.Context
-import android.os.Environment
 import android.util.Log
 import java.io.File
 import java.text.SimpleDateFormat
@@ -16,12 +15,10 @@ object FileLogger {
 
     fun init(context: Context) {
         try {
-            val downloadsDir = Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_DOWNLOADS
-            )
-            if (downloadsDir.exists() || downloadsDir.mkdirs()) {
+            val logDir = File(context.filesDir, "logs")
+            if (logDir.exists() || logDir.mkdirs()) {
                 val dateStr = SimpleDateFormat("yyyyMMdd", Locale.US).format(Date())
-                logFile = File(downloadsDir, "tvremote_$dateStr.log")
+                logFile = File(logDir, "tvremote_$dateStr.log")
                 if (!logFile!!.exists()) {
                     logFile!!.createNewFile()
                 }
@@ -29,7 +26,7 @@ object FileLogger {
                 d(TAG, "FileLogger initialized: ${logFile!!.absolutePath}")
             } else {
                 initialized = false
-                Log.w(TAG, "Cannot access Downloads directory, file logging disabled")
+                Log.w(TAG, "Cannot create logs directory, file logging disabled")
             }
         } catch (e: Exception) {
             initialized = false
